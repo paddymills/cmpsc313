@@ -1,5 +1,7 @@
 
-# Name and general description of program
+# Write a MIPS program that will ask the user for two integers a and b. Your
+# program will output the integer division result of a / b if b != 0. Your
+# program should output “ERROR” if otherwise.
 
 # ----------------------------------------
 # Data declarations go in this section.

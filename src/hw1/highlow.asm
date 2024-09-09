@@ -1,5 +1,6 @@
 
-# Name and general description of program
+# Write a MIPS program that will take in two integers from the user. Your
+# program should output which of the two numbers is larger than the other.
 
 # ----------------------------------------
 # Data declarations go in this section.

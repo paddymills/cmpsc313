@@ -1,4 +1,7 @@
 
+# Write a MIPS program that asks the user for an integer value. Your program
+# will output “EVEN” if the value is even and “ODD” if the value is odd.
+
 # TODO: documentation
 
 .data

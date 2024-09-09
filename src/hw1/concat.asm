@@ -1,5 +1,8 @@
-#
-
+# For this problem, you will write a MIPS program that will ask the user for two
+#  strings. You will then print out a string containing the concatenation of the
+# second string and the first string (in that order.) As an example, if “Hello”
+# and “World” were inputted by the user in that order, you will output the
+# “WorldHello”.
 
 .data
 
