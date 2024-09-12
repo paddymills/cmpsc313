@@ -20,7 +20,8 @@ main:
 
 # -----
 # Done, terminate program.
-li $v0, 10
-syscall # all done!
+end:
+    li $v0, 10
+    syscall # all done!
 
 .end main
