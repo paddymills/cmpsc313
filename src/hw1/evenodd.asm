@@ -1,8 +1,8 @@
 
+# Patrick Miller
+
 # Write a MIPS program that asks the user for an integer value. Your program
 # will output “EVEN” if the value is even and “ODD” if the value is odd.
-
-# TODO: documentation
 
 .data
 	inputPrompt: .asciiz "Please enter a number: "
@@ -13,6 +13,7 @@
 .globl main
 .ent main
 main:
+	# ask user for a number
 	li $v0, 4
 	la $a0, inputPrompt
 	syscall
@@ -24,9 +25,6 @@ main:
 	# store number in a temp register
 	move $t0, $v0
 
-	# set up to show answer (so that we dont' have to do it twice in branches)
-	li $v0, 4
-
 	# check if LSB is even or odd
 	#	because the immediate value is 0000..001, all except the LSB will be 0
 	#	the resulting number will be what the LSB is
@@ -37,17 +35,19 @@ main:
 	# if result is 0, number is even
 	beqz $t1, even
 	# else, go to odd
-	j odd
+	b odd
 
 even:
 	la $a0, isEven
-	j end
+	b end
 
 odd:
 	la $a0, isOdd
+	b end
 
 end:
 	# show answer
+	li $v0, 4
 	syscall
 
 # -----

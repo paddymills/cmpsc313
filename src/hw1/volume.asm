@@ -16,10 +16,11 @@
 .data
 # program specific data declarations
 pi: .float 3.14159
-radius: .float 0.0
+three: .float 3.0
+four: .float 4.0
 
 inputPrompt: .asciiz "Enter the radius of the sphere: "
-outputLabel: .asciiz "The volume of the spere is"
+outputLabel: .asciiz "The volume of the spere is: "
 
 isNegative: .asciiz "Error: a sphere cannot have a negative radius"
 newline: .asciiz "\n"
@@ -41,9 +42,37 @@ main:
 	li $v0, 6
 	syscall
 
-	bltz $f0, error
+	# if number is negative, go to error
+	mfc1 $t0, $f0	# load input (float) into integer register
+	bltz $t0, error
 
-calc:
+calculate:
+	# $f2 = 4/3
+	l.s $f4, four
+	l.s $f6, three
+	div.s $f2, $f4, $f6
+
+	# $f4 = pi
+	l.s $f4, pi
+
+	# $f6 = radius^3
+	mul.s $f6, $f0, $f0
+	mul.s $f6, $f6, $f0
+
+	# $f8: putting it all together
+	mul.s $f8, $f2, $f4
+	mul.s $f8, $f8, $f6
+
+	# print output
+	li $v0, 4
+	la $a0, outputLabel
+	syscall
+
+	# print volume
+	li $v0, 2
+	mov.s $f12, $f8
+	syscall
+
 	j end
 
 error:
@@ -59,6 +88,5 @@ end:
 	# -----
 	# Done, terminate program.
 	li $v0, 10
-	syscall # all done!
-
+	syscall
 .end main
