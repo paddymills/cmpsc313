@@ -1,3 +1,5 @@
+# Patrick Miller
+
 # For this problem, you will write a MIPS program that will ask the user for two
 # strings. You will then print out a string containing the concatenation of the
 # second string and the first string (in that order.) As an example, if “Hello”
@@ -39,6 +41,7 @@ main:
 	syscall
 
 # remove newline from end of word 2
+# with help of this post: https://stackoverflow.com/questions/13630989/how-to-remove-newline-in-mips
 removeNewline:
 	li $t0, 0	# initialize array index counter
 	li $t2, 10	# ascii character for '\n'
