@@ -43,7 +43,8 @@ main:
 	syscall
 
 	# if number is negative, go to error
-	mfc1 $t0, $f0	# load input (float) into integer register
+	cvt.w.s $f2, $f0
+	mfc1 $t0, $f2	# load input (float) into integer register
 	bltz $t0, error
 
 calculate:
