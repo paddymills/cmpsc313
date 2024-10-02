@@ -1,20 +1,20 @@
-# Name and general description of program
+# Patrick Miller
+# Program Name:
+# Description:
 
 # ----------------------------------------
-# Data declarations go in this section.
+# Data Declarations:
 .data
-# program specific data declarations
 
 # ----------------------------------------
-# Program code goes in this section.
+# Program Code:
 .text
 
 .globl main
 .ent main
 main:
-
 # -----
-# your program code goes here.
+# Program start
 
 
 
@@ -22,6 +22,6 @@ main:
 # Done, terminate program.
 end:
     li $v0, 10
-    syscall # all done!
+    syscall
 
 .end main
