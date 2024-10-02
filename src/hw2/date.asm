@@ -39,22 +39,23 @@ main:
 # -----
 # Program start
 
-	lw $t1, maxMonth
-	lw $t2, maxYear
-	lw $t3, maxDay
 
 getDate:
 	# get month
 	la $a0,inputMonth	# load prompt
 	jal getNum
 	lw $t0,($sp)	# pull result off of stack
+
+	# validate month
+	lw $t1, maxMonth
 	beqz $t0,invalidMonth
 	bgt $t0,$t1,invalidMonth
 
+	# compensate for September, April, June, November
 	la $t5, sajnMonths
 	li $t6, 4	# number of sajn months
 	li $t7, 0	# index
-	li $t8, 0	# day adder to offset comparison for September, April, June, November
+	li $t8, 0	# day adder to offset
 sajnValidate:
 	beq $t7,$t6,getDay	# array searched
 
@@ -71,10 +72,13 @@ getDay:
 	la $a0,inputDay	# load prompt
 	jal getNum
 	lw $t0,($sp)	# pull result off of stack
+
+	# validate day
 	beqz $t0,invalidDay
 
 	add $t0, $t0, $t8	# add day adder to compensate for September, April, June, November
-	bgt $t0,$t3,invalidDay
+	lw $t1, maxDay
+	bgt $t0,$t1,invalidDay
 
 
 validateYear:
@@ -82,8 +86,11 @@ validateYear:
 	la $a0,inputYear	# load prompt
 	jal getNum
 	lw $t0,($sp)	# pull result off of stack
+
+	# validate year
+	lw $t1, maxYear
 	beqz $t0,invalidYear
-	bgt $t0,$t2,invalidYear
+	bgt $t0,$t1,invalidYear
 
 	# is a valid date
 	li $v0,4
