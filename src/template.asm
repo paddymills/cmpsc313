@@ -21,7 +21,7 @@ main:
 # -----
 # Done, terminate program.
 end:
-    li $v0, 10
-    syscall
+	li $v0, 10
+	syscall
 
 .end main
