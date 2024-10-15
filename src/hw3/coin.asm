@@ -24,6 +24,9 @@
 # Data Declarations:
 .data
 
+getIterations: .asciiz "Number of times to flip coin: "
+
+newline: .asciiz "\n"
 
 
 # ----------------------------------------
@@ -35,15 +38,32 @@
 main:
 # -----
 # Program start
+	li $v0, 4
+	la $a0, getIterations
+	syscall
+	li $v0, 5	# get number of iterations from user
+	syscall
+	move $t0, $v0
+
+loop:
+	beqz $t0, telemetry
 	jal flipCoin
 
 	move $a0, $v0	# move random number to $a0
 	li $v0, 1		# print int syscall
 	syscall
 
+telemetry:
+	# TODO:
+	#	Heads: count & percentage
+	#	Tails: count & percentage
+
 # -----
 # Done, terminate program.
 end:
+	li $v0, 4
+	la $a0, newline
+	syscall
 	li $v0, 10
 	syscall
 
@@ -55,9 +75,8 @@ flipCoin:
 	# simulates a coin flip
 	# returns 1 for HEADS, 2 for TAILS
 
-	li $v0, 41			# random number generator syscall
-	xor $a0, $a0, $a0	# select random generator 0
-	syscall				# generate random int into $a0
+	# hardcode 1 for testing
+	li $a0, 1
 
 	move $v0, $a0		# store the random number in $v0
 	jr $ra

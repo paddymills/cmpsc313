@@ -18,6 +18,9 @@
 # Data Declarations:
 .data
 
+getArrayLength: .asciiz "Number of elements in the array: "
+getArrayValues: .asciiz "Array values: "
+
 # ----------------------------------------
 # Program Code:
 .text
@@ -28,6 +31,8 @@ main:
 # -----
 # Program start
 
+	# idea: use the stack for our dynamic array?
+	#	- store i, j, pivot and bounds as copies of $sp
 
 
 # -----
@@ -37,3 +42,23 @@ end:
 	syscall
 
 .end main
+
+.globl quicksort
+.ent quicksort
+quicksort:
+	# variables (will sort arr[a:b])
+	#	- arr: array of numbers
+	#	- a: start index (include)
+	#	- b: end index (exclude)
+	# calculate:
+	#	- p: pivot (last, for simplicity)
+	#	- i: last element swapped (last element known to be in correct position)
+	#	- j: current element being checked
+	# recursive call:
+	#	- quicksort(arr[a:pivot])
+	#	- quicksort(arr[pivot+1:b])
+
+swap:
+	# swap arr[i] and arr[j]
+
+.end quicksort
