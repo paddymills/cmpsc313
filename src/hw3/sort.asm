@@ -19,7 +19,17 @@
 .data
 
 getArrayLength: .asciiz "Number of elements in the array: "
-getArrayValues: .asciiz "Array values: "
+getArrayValues: .asciiz "Array values: \n"
+getArrayValuesStart: .asciiz "Array["
+getArrayValuesEnd: .asciiz "]: "
+
+outUnsortedArray: .asciiz "Unsorted array: "
+outSortedArray: .asciiz "Sorted array: "
+outArrayStart: .asciiz "["
+outArrayDelim: .asciiz ", "
+outArrayEnd: .asciiz "]\n"
+
+newline: .asciiz "\n"
 
 # ----------------------------------------
 # Program Code:
@@ -30,10 +40,59 @@ getArrayValues: .asciiz "Array values: "
 main:
 # -----
 # Program start
+	# get array length
+	li $v0, 4
+	la $a0, getArrayLength
+	syscall
+	li $v0, 5
+	syscall
+	move $s0, $v0		# store array length
 
+
+	# get array values
+	li $t0, 0		# index counter
+	li $v0, 4
+	la $a0, getArrayValues
+	syscall
+loopInput:
+	beq $t0, $s0, printUnsorted
+
+	# prompt: `Array[i]: `
+	li $v0, 4
+	la $a0, getArrayValuesStart
+	syscall
+	move $a0, $t0
+	li $v0, 1
+	syscall
+	li $v0, 4
+	la $a0, getArrayValuesEnd
+	syscall
+
+	# get number from user
+	li $v0, 5
+	syscall
+	subu $sp, $sp, 4	# decrement stack pointer
+	sw $v0, ($sp)		# push number onto stack
+
+	addi $t0, $t0, 1	# increment index counter
+	b loopInput
+printUnsorted:
+	li $v0, 4
+	la $a0, outUnsortedArray
+	syscall
+
+	# print array
+	jal printArray
+
+sortArray:
 	# idea: use the stack for our dynamic array?
 	#	- store i, j, pivot and bounds as copies of $sp
 
+printSortedArray:
+	li $v0, 4
+	la $a0, outSortedArray
+	syscall
+	jal printArray
 
 # -----
 # Done, terminate program.
@@ -42,6 +101,48 @@ end:
 	syscall
 
 .end main
+
+.globl printArray
+.ent printArray
+printArray:
+	# array is on stack
+	# $sp is the top of the stack
+	# $s0 is the length of the array
+
+	move $t0, $s0		# element counter
+
+	li $v0, 4
+	la $a0, outArrayStart
+	syscall
+
+printArrayLoop:
+	addi $t0, $t0, -1	# decrement element counter
+
+	sll $t1, $t0, 2		# calculate offset ($t1 = $t0 * 4)
+	add $t1, $t1, $sp	# calculate address of next element
+
+	# print the array element
+	li $v0, 1
+	lw $a0, ($t1)
+	syscall
+
+	beqz $t0, endPrintArray	# last element: exit loop
+
+	# print delimiter
+	li $v0, 4
+	la $a0, outArrayDelim
+	syscall
+
+	b printArrayLoop
+
+endPrintArray:
+	li $v0, 4
+	la $a0, outArrayEnd
+	syscall
+
+	jr $ra
+
+.end printArray
 
 .globl quicksort
 .ent quicksort
