@@ -40,6 +40,8 @@ newline: .asciiz "\n"
 main:
 # -----
 # Program start
+	b testArray	# skip user input for testing
+
 	# get array length
 	li $v0, 4
 	la $a0, getArrayLength
@@ -47,7 +49,6 @@ main:
 	li $v0, 5
 	syscall
 	move $s0, $v0		# store array length
-
 
 	# get array values
 	li $t0, 0		# index counter
@@ -76,6 +77,32 @@ loopInput:
 
 	addi $t0, $t0, 1	# increment index counter
 	b loopInput
+
+testArray:
+	# load numbers
+	li $t1, 4
+	li $t2, 1
+	li $t3, 2
+	li $t4, 7
+	li $t5, 3
+	li $t6, 9
+	li $t7, 8
+	li $t8, 6
+
+	li $s0, 8			# array length
+	sll $t0, $s0, 2		# calculate offset ($t1 = $s0 * 4)
+	sub $sp, $sp, $t0	# decrement stack pointer
+	
+	# push numbers onto stack
+	sw $t1, 28($sp)
+	sw $t2, 24($sp)
+	sw $t3, 20($sp)
+	sw $t4, 16($sp)
+	sw $t5, 12($sp)
+	sw $t6,  8($sp)
+	sw $t7,  4($sp)
+	sw $t8,   ($sp)
+
 printUnsorted:
 	li $v0, 4
 	la $a0, outUnsortedArray
