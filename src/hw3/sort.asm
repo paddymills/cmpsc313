@@ -40,6 +40,9 @@ newline: .asciiz "\n"
 main:
 # -----
 # Program start
+	# TODO: store start of array location in $s0 ($sp of first element)
+	# TODO: store length of array in $s1 (currently in $s0)
+
 	b testArray	# skip user input for testing
 
 	# get array length
