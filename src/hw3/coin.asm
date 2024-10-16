@@ -32,6 +32,7 @@ telemMsgHeads: .asciiz "Heads: "
 teleMsgTails: .asciiz "Tails: "
 telemMsgParen: .asciiz " ("
 teleMsgPercent: .asciiz "%)\n"
+oneHundred: .float 100.0
 
 newline: .asciiz "\n"
 
@@ -83,15 +84,17 @@ telemetry:
 	#	Tails: count & percentage
 
 	# move values to FP registers for division
-	move $f0, $t7
-	move $f2, $t8
+	mtc1 $t7, $f0
+	mtc1 $t8, $f2
 	cvt.s.w $f0, $f0
 	cvt.s.w $f2, $f2
 
-	add $f4, $f0, $f2	# total flips
+	add.s $f4, $f0, $f2	# total flips
 
-	div.s $f6, $f0, $f4	# calculate heads percentage
-	div.s $f8, $f2, $f4	# calculate tails percentage
+	div.s $f6, $f0, $f4		# calculate heads percentage
+	l.s $f10, oneHundred	# for scaling
+	mul.s $f6, $f6, $f10	# scale heads percentage for printing
+	sub.s $f8, $f10, $f6	# calculate tails percentage
 
 	# print heads telemetry
 	li $v0, 4
