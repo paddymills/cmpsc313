@@ -25,6 +25,13 @@
 .data
 
 getIterations: .asciiz "Number of times to flip coin: "
+randomStates: .word 1 1 2 1 2 2 2 1 2 2 2 2 1 1 2 1 1 2 1 1
+numRandomStates: .word 20
+
+telemMsgHeads: .asciiz "Heads: "
+teleMsgTails: .asciiz "Tails: "
+telemMsgParen: .asciiz " ("
+teleMsgPercent: .asciiz "%)\n"
 
 newline: .asciiz "\n"
 
@@ -38,32 +45,91 @@ newline: .asciiz "\n"
 main:
 # -----
 # Program start
+	# load random states
+	la $s0, randomStates
+	lw $s1, numRandomStates
+	li $s2, 1
+
 	li $v0, 4
 	la $a0, getIterations
 	syscall
 	li $v0, 5	# get number of iterations from user
 	syscall
-	move $t0, $v0
+	move $s3, $v0
+
+	li $t7, 0	# heads counter
+	li $t8, 0	# tails counter
 
 loop:
-	beqz $t0, telemetry
+	beqz $s3, telemetry
 	jal flipCoin
 
 	move $a0, $v0	# move random number to $a0
-	li $v0, 1		# print int syscall
-	syscall
+
+	addi $s3, $s3, -1	# decrement counter
+	beq $a0, 2, isTails
+
+isHeads:
+	addi $t7, $t7, 1
+	b loop
+
+isTails:
+	addi $t8, $t8, 1
+	b loop
 
 telemetry:
 	# TODO:
 	#	Heads: count & percentage
 	#	Tails: count & percentage
 
+	# move values to FP registers for division
+	move $f0, $t7
+	move $f2, $t8
+	cvt.s.w $f0, $f0
+	cvt.s.w $f2, $f2
+
+	add $f4, $f0, $f2	# total flips
+
+	div.s $f6, $f0, $f4	# calculate heads percentage
+	div.s $f8, $f2, $f4	# calculate tails percentage
+
+	# print heads telemetry
+	li $v0, 4
+	la $a0, telemMsgHeads
+	syscall
+	li $v0, 1
+	move $a0, $t7
+	syscall
+	li $v0, 4
+	la $a0, telemMsgParen
+	syscall
+	li $v0, 2
+	mov.s $f12, $f6
+	syscall
+	li $v0, 4
+	la $a0, teleMsgPercent
+	syscall
+
+	# print tails telemetry
+	li $v0, 4
+	la $a0, teleMsgTails
+	syscall
+	li $v0, 1
+	move $a0, $t8
+	syscall
+	li $v0, 4
+	la $a0, telemMsgParen
+	syscall
+	li $v0, 2
+	mov.s $f12, $f8
+	syscall
+	li $v0, 4
+	la $a0, teleMsgPercent
+	syscall
+
 # -----
 # Done, terminate program.
 end:
-	li $v0, 4
-	la $a0, newline
-	syscall
 	li $v0, 10
 	syscall
 
@@ -75,10 +141,18 @@ flipCoin:
 	# simulates a coin flip
 	# returns 1 for HEADS, 2 for TAILS
 
-	# hardcode 1 for testing
-	li $a0, 1
+	beq $s2, $s1, resetState	# reset state counter past the last state
 
-	move $v0, $a0		# store the random number in $v0
+simulateCoin:
+	sll $t0, $s2, 2		# calculate offset
+	add $t0, $t0, $s0	# calculate address of random state
+	lw $v0, ($t0)		# store random number for result
+	addi $s2, $s2, 1	# increment state counter
+
 	jr $ra
+
+resetState:
+	li $s2, 0
+	b simulateCoin
 
 .end flipCoin
