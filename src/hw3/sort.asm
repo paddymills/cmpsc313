@@ -189,4 +189,26 @@ quicksort:
 swap:
 	# swap arr[i] and arr[j]
 
+recursiveCalls:
+	# recursive calls to quicksort
+
+	# base case: if a >= b, return
+
+	# calculate pivot
+	#	- p = b - 1
+	#	- i = a - 1
+	#	- j = a
+
+	# loop:
+	#	- if arr[j] < arr[p], swap arr[i+1] and arr[j], increment i
+	#	- increment j
+
+	# swap arr[i+1] and arr[p]
+
+	# recursive call: quicksort(arr[a:pivot])
+	# recursive call: quicksort(arr[pivot+1:b])
+
+	# return
+
+
 .end quicksort
