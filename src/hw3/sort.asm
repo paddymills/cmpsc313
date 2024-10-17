@@ -51,15 +51,22 @@ main:
 	syscall
 	li $v0, 5
 	syscall
-	move $s0, $v0		# store array length
+	move $s1, $v0		# store array length
+
+	# create dynamic array
+	li $v0, 9
+	move $a0, $s1
+	syscall
+	move $s0, $v0		# store array start address
 
 	# get array values
 	li $t0, 0		# index counter
+	move $t1, $s0	# store array start address
 	li $v0, 4
 	la $a0, getArrayValues
 	syscall
 loopInput:
-	beq $t0, $s0, printUnsorted
+	beq $t0, $s1, printUnsorted
 
 	# prompt: `Array[i]: `
 	li $v0, 4
@@ -75,13 +82,21 @@ loopInput:
 	# get number from user
 	li $v0, 5
 	syscall
-	subu $sp, $sp, 4	# decrement stack pointer
-	sw $v0, ($sp)		# push number onto stack
-
+	sw $v0, ($t1)		# push number onto stack
+	addi $t1, $t1, 4	# increment array pointer
 	addi $t0, $t0, 1	# increment index counter
+
 	b loopInput
 
 testArray:
+	# create dynamic array
+	li $v0, 9
+	li $a0, 32	# 8 elements at 4 bytes each
+	syscall
+
+	move $s0, $v0	# store array start address
+	li $s1, 8		# store array length
+	
 	# load numbers
 	li $t1, 4
 	li $t2, 1
@@ -91,20 +106,16 @@ testArray:
 	li $t6, 9
 	li $t7, 8
 	li $t8, 6
-
-	li $s0, 8			# array length
-	sll $t0, $s0, 2		# calculate offset ($t1 = $s0 * 4)
-	sub $sp, $sp, $t0	# decrement stack pointer
 	
-	# push numbers onto stack
-	sw $t1, 28($sp)
-	sw $t2, 24($sp)
-	sw $t3, 20($sp)
-	sw $t4, 16($sp)
-	sw $t5, 12($sp)
-	sw $t6,  8($sp)
-	sw $t7,  4($sp)
-	sw $t8,   ($sp)
+	# push numbers into array
+	sw $t1,   ($s0)
+	sw $t2,  4($s0)
+	sw $t3,  8($s0)
+	sw $t4, 12($s0)
+	sw $t5, 16($s0)
+	sw $t6, 20($s0)
+	sw $t7, 24($s0)
+	sw $t8, 28($s0)
 
 printUnsorted:
 	li $v0, 4
@@ -139,24 +150,23 @@ printArray:
 	# $sp is the top of the stack
 	# $s0 is the length of the array
 
-	move $t0, $s0		# element counter
+	move $t0, $s0		# start of array
+	move $t1, $s1		# element counter
 
 	li $v0, 4
 	la $a0, outArrayStart
 	syscall
 
 printArrayLoop:
-	addi $t0, $t0, -1	# decrement element counter
-
-	sll $t1, $t0, 2		# calculate offset ($t1 = $t0 * 4)
-	add $t1, $t1, $sp	# calculate address of next element
+	addi $t1, $t1, -1	# decrement element counter
 
 	# print the array element
 	li $v0, 1
-	lw $a0, ($t1)
+	lw $a0, ($t0)
 	syscall
 
-	beqz $t0, endPrintArray	# last element: exit loop
+	add $t0, $t0, 4		# select next element
+	beqz $t1, endPrintArray	# last element: exit loop
 
 	# print delimiter
 	li $v0, 4
