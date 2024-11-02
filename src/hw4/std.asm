@@ -144,7 +144,7 @@ sqrt:
 	li $t0, 0			# i
 	cvt.w.s $f0, $f12	# convert n to integer
 	mfc1 $t1, $f0		# move n to integer register
-	srl $t1, $a0, 1		# n / 2
+	srl $t1, $t1, 1		# n / 2
 
 	mov.s $f6, $f12			# load n
 	mov.s $f8, $f6			# initial x = n
