@@ -74,7 +74,7 @@ calc_mean:
 	mtc1 $t2, $f0		# load sum
 	mtc1 $s1, $f2		# load length (N)
 
-	cvt.s.w $f4, $f0	# convert sum to float
+	cvt.s.w $f0, $f0	# convert sum to float
 	cvt.s.w $f2, $f2	# convert length to float
 	div.s $f0, $f0, $f2	# sum / length = mean
 
