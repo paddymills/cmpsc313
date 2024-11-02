@@ -2,6 +2,11 @@
 default:
   @just --list
 
+[linux]
+devc:
+  podman build -t spim .
+  podman run --rm -itv ./:/src:z spim
+
 run assignment problem:
   spim -file src/{{assignment}}/{{problem}}.asm
 
