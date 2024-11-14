@@ -7,11 +7,11 @@ devc:
   podman build -t spim .
   podman run --rm -itv ./:/src:z spim
 
-run assignment problem:
-  spim -file src/{{assignment}}/{{problem}}.asm
+run problem:
+  spim -file src/$FOLDER/{{problem}}.asm
 
-init assignment problem:
-  cp src/template.asm src/{{assignment}}/{{problem}}.asm
+init problem:
+  cp src/template.asm src/$FOLDER/{{problem}}.asm
 
 zip assignment:
   zip --junk-paths PatrickMiller_{{assignment}} src/{{assignment}}/*.asm
