@@ -10,7 +10,7 @@
 # ----------------------------------------
 # Data Declarations:
 .data
-peopleFile: .asciiz "/mnt/c/Users/pmiller1/src/cmpsc313/src/hw5/people.txt"
+peopleFile: .asciiz "/path/to/files/people.txt"
 buffer: .space 4
 
 # ----------------------------------------
@@ -83,7 +83,7 @@ loop_read_first:
 
 	la $t1, buffer
 	lb $t2, 0($t1)
-	beq $t2, $t7, finalize_person
+	blt $t2, 32, finalize_person
 
 	# write to buffer
 	sb $t2, 0($t3)
